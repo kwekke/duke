@@ -23,6 +23,7 @@ public class Storage {
      * @throws DukeException informing where an IOException has occurred.
      */
     public Storage(String filePath) throws DukeException {
+        assert !filePath.equals("");
         this.filePath = filePath;
         File file = new File(filePath);
         try {

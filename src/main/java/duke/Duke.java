@@ -34,10 +34,11 @@ public class Duke {
     public String getResponse(String input) {
         try {
             Command c = Parser.parse(input);
-            String res = c.execute(tasks, storage);
             if (c.isExit()) {
                 exit();
             }
+            String res = c.execute(tasks, storage);
+            assert !res.equals("");
             return res;
         } catch (DukeException e) {
             return e.getMessage();

@@ -12,6 +12,7 @@ public abstract class Task {
      * @param description Task description.
      */
     public Task(String description) {
+        assert !description.equals("");
         this.description = description;
     }
 

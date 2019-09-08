@@ -20,6 +20,7 @@ public class DeadlineTask extends Task {
      */
     public DeadlineTask(String description, String time) throws DukeException {
         super(description);
+        assert !time.equals("");
         try {
             this.time = format.parse(time);
         } catch (ParseException e) {
