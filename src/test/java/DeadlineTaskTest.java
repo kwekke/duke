@@ -19,7 +19,7 @@ public class DeadlineTaskTest {
             new DeadlineTask("deadlineTest", "01/01");
             fail();
         } catch (Exception e) {
-            assertEquals("01/01 is not a valid date.", e.getMessage());
+            assertEquals("01/01 is not a valid date. Use dd/MM/yyyy HHmm", e.getMessage());
         }
     }
 }

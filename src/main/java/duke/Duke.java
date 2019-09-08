@@ -8,6 +8,7 @@ import static javafx.application.Platform.exit;
 public class Duke {
     private Storage storage;
     private TaskList tasks;
+    private Printer printer;
 
     public Duke() {
         this("./data/duke.txt");
@@ -19,8 +20,9 @@ public class Duke {
      */
     private Duke(String filePath) {
         try {
-            storage = new Storage(filePath);
-            tasks = new TaskList(storage.load());
+            this.storage = new Storage(filePath);
+            this.printer = new Printer();
+            this.tasks = new TaskList(storage.load());
         } catch (DukeException e) {
             System.out.println(e.getMessage());
         }
@@ -33,14 +35,14 @@ public class Duke {
      */
     public String getResponse(String input) {
         try {
-            Command c = Parser.parse(input);
-            String res = c.execute(tasks, storage);
+            Command c = Parser.parse(input.trim());
+            c.execute(tasks, storage, printer);
             if (c.isExit()) {
                 exit();
             }
-            return res;
+            return printer.generateResponse();
         } catch (DukeException e) {
-            return e.getMessage();
+            return printer.generateExceptionMessage(e.getMessage());
         }
     }
 
@@ -49,13 +51,7 @@ public class Duke {
      * @return Duke's welcome message in a string
      */
     public String getWelcomeMessage() {
-        String msg = "Hello from Duke \n";
-        msg += "You have " + tasks.getSize() + " task"
-                + (tasks.getSize() == 1 ? " " : "s ") + "in the list.\n";
-        for (int i = 0; i < tasks.getSize(); i++) {
-            msg += (i + 1) + "." + tasks.getTask(i) + "\n";
-        }
-        msg += "\nWhat can i do for you?\n";
-        return msg;
+        printer.generateWelcomeMessage(tasks);
+        return printer.generateResponse();
     }
 }

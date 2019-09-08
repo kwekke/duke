@@ -20,20 +20,15 @@ public class Storage {
      * Initialises a storage object which handles with loading tasks from the file
      * and saving tasks in the file.
      * @param filePath a string storing the location of the text file which stores the tasks' data.
-     * @throws DukeException informing where an IOException has occurred.
      */
-    public Storage(String filePath) throws DukeException {
+    public Storage(String filePath) {
         this.filePath = filePath;
         File file = new File(filePath);
         try {
-            if (file.exists()) {
-                sc = new Scanner(file);
-            } else {
-                file.createNewFile();
-                sc = new Scanner(file);
-            }
+            file.createNewFile();
+            sc = new Scanner(file);
         } catch (IOException e) {
-            throw new DukeException("IOException from invalid filePath");
+            e.printStackTrace();
         }
     }
 
@@ -62,8 +57,7 @@ public class Storage {
                 task = new EventTask(token[2].trim(), time);
                 break;
             default:
-                System.out.println(tokenString);
-                throw new DukeException("Corrupted file");
+                throw new DukeException("Corrupted file. Bad line is " + tokenString);
             }
             tasks.add(task);
             if (token[1].trim().equals("1")) {
@@ -77,7 +71,7 @@ public class Storage {
      * Saves tasks in the text file given a TaskList.
      * @param tasks TaskList to be saved into the text file.
      */
-    public void save(TaskList tasks) throws DukeException {
+    public void save(TaskList tasks) {
         try {
             FileWriter fw1 = new FileWriter(filePath);
             fw1.write("");
@@ -89,7 +83,7 @@ public class Storage {
             }
             fw2.close();
         } catch (IOException e) {
-            throw new DukeException("IOException from Storage save method");
+            e.printStackTrace();
         }
     }
 }

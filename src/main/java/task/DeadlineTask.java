@@ -23,8 +23,13 @@ public class DeadlineTask extends Task {
         try {
             this.time = format.parse(time);
         } catch (ParseException e) {
-            throw new DukeInvalidTaskDateFormatException(time);
+            throw new DukeInvalidTaskDateFormatException(time, format.toPattern());
         }
+    }
+
+    public DeadlineTask(String description, Date time) {
+        super(description);
+        this.time = time;
     }
 
     public String toFileString() {
@@ -33,7 +38,7 @@ public class DeadlineTask extends Task {
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + time + ")";
+        return "[D]" + super.toString() + " (by: " + format.format(this.time) + ")";
     }
 
 }

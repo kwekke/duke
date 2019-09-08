@@ -12,7 +12,7 @@ import command.ToDoCommand;
 import exception.DukeException;
 import exception.DukeInvalidTaskDescriptionException;
 import exception.DukeInvalidTaskTimeException;
-import task.Task;
+import exception.DukeMissingNumberedTaskException;
 
 class Parser {
 
@@ -23,64 +23,100 @@ class Parser {
      * @throws DukeException DukeException that may arise from invalid inputs.
      */
     static Command parse(String input) throws DukeException {
-        String[] token = input.split(" ");
-        String[] temp;
-        String taskDesc;
-        switch (token[0]) {
+        String[] inputSplitBySpace = input.split(" ");
+        switch (inputSplitBySpace[0]) {
         case "bye":
-            return new ExitCommand();
-        case "list":
-            return new ListCommand();
-        case "done":
-            if (token.length <= 1) {
-                throw new DukeException("Give me a goddamn numbered task to do.");
-            }
-            try {
-                int index = Integer.parseInt(token[1]);
-                return new DoneCommand(index);
-            } catch (NumberFormatException e) {
-                throw new DukeException("Give me a goddamn numbered task to do.");
-            }
-        case "delete" :
-            if (token.length <= 1) {
-                throw new DukeException("Give me a goddamn numbered task to delete.");
-            }
-            try {
-                int index = Integer.parseInt(token[1]);
-                return new DeleteCommand(index);
-            } catch (NumberFormatException e) {
-                throw new DukeException("Give me a goddamn numbered task to delete.");
-            }
-        case "todo":
-            if (token.length <= 1) {
-                throw new DukeInvalidTaskDescriptionException("ToDo");
-            }
-            return new ToDoCommand(token[1]);
+            return parseExit(input);
         case "deadline":
-            temp = input.split("/by");
-            taskDesc = temp[0].substring(8).trim();
-            if (taskDesc.equals("")) {
-                throw new DukeInvalidTaskDescriptionException("Deadline");
-            } else if (temp.length < 2) {
-                throw new DukeInvalidTaskTimeException("deadline");
-            }
-            return new DeadlineCommand(taskDesc, temp[1].trim());
+            return parseDeadline(input);
+        case "delete" :
+            return parseDelete(input);
+        case "done":
+            return parseDone(input);
         case "event":
-            temp = input.split("/at");
-            taskDesc = temp[0].substring(5).trim();
-            if (taskDesc.equals("")) {
-                throw new DukeInvalidTaskDescriptionException("Event");
-            } else if (temp.length < 2) {
-                throw new DukeInvalidTaskTimeException("event");
-            }
-            return new EventCommand(taskDesc, temp[1].trim());
+            return parseEvent(input);
         case "find":
-            if (token.length <= 1) {
-                throw new DukeException("Give me a goddamn keyword to find.");
-            }
-            return new FindCommand(input.substring(4).trim());
+            return parseFind(input);
+        case "list":
+            return parseList(input);
+        case "todo":
+            return parseTodo(input);
         default:
             throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
         }
+    }
+
+    private static Command parseDeadline(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split("/by");
+        String taskDesc = inputSplitBySpace[0].substring(8).trim();
+        if (taskDesc.equals("")) {
+            throw new DukeInvalidTaskDescriptionException("Deadline");
+        } else if (inputSplitBySpace.length < 2) {
+            throw new DukeInvalidTaskTimeException("deadline");
+        }
+        return new DeadlineCommand(taskDesc, inputSplitBySpace[1].trim());
+    }
+
+    private static Command parseDelete(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 1) {
+            throw new DukeMissingNumberedTaskException("delete");
+        }
+        try {
+            int index = Integer.parseInt(inputSplitBySpace[1]);
+            return new DeleteCommand(index - 1);
+        } catch (NumberFormatException e) {
+            throw new DukeMissingNumberedTaskException("delete");
+        }
+    }
+
+    private static Command parseDone(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 1) {
+            throw new DukeMissingNumberedTaskException("do");
+        }
+        try {
+            int index = Integer.parseInt(inputSplitBySpace[1]);
+            return new DoneCommand(index - 1);
+        } catch (NumberFormatException e) {
+            throw new DukeMissingNumberedTaskException("do");
+        }
+    }
+
+    private static Command parseEvent(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split("/at");
+        String taskDesc = inputSplitBySpace[0].substring(5).trim();
+        if (taskDesc.equals("")) {
+            throw new DukeInvalidTaskDescriptionException("Event");
+        } else if (inputSplitBySpace.length < 2) {
+            throw new DukeInvalidTaskTimeException("event");
+        }
+        return new EventCommand(taskDesc, inputSplitBySpace[1].trim());
+    }
+
+    private static Command parseExit(String input) {
+        assert input.equals("bye");
+        return new ExitCommand();
+    }
+
+    private static Command parseFind(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 1) {
+            throw new DukeException("Give me a keyword to find.");
+        }
+        return new FindCommand(input.substring(4).trim());
+    }
+
+    private static Command parseList(String input) {
+        assert input.equals("list");
+        return new ListCommand();
+    }
+
+    private static Command parseTodo(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 1) {
+            throw new DukeInvalidTaskDescriptionException("ToDo");
+        }
+        return new ToDoCommand(inputSplitBySpace[1]);
     }
 }

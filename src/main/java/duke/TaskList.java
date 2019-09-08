@@ -11,6 +11,10 @@ import java.util.ArrayList;
 public class TaskList {
     private ArrayList<Task> tasks;
 
+    public TaskList() {
+        this(new ArrayList<Task>());
+    }
+
     /**
      * Creates a TaskList which stores Tasks.
      * @param tasks an ArrayList of Task.
@@ -48,16 +52,10 @@ public class TaskList {
      * @return a string of all tasks in the list.
      */
     public String toString() {
-        String res;
-        if (tasks.size() == 0) {
-            return "You have no tasks in the list.";
-        } else {
-            res = "I can find " + tasks.size() + " task"
-                    + (tasks.size() == 1 ? " " : "s ") + "in the list.";
-        }
+        String listOfTasks = "";
         for (int i = 0; i < tasks.size(); i++) {
-            res += ("\n" + (i + 1) + "." + tasks.get(i));
+            listOfTasks += (i + 1) + ". " + tasks.get(i) + "\n";
         }
-        return res;
+        return listOfTasks;
     }
 }

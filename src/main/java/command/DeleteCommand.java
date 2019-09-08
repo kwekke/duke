@@ -1,5 +1,6 @@
 package command;
 
+import duke.Printer;
 import duke.Storage;
 import duke.TaskList;
 import exception.DukeException;
@@ -17,27 +18,26 @@ public class DeleteCommand extends Command {
      * @param index Task index to be deleted.
      */
     public DeleteCommand(int index) {
-        this.index = index - 1;
+        this.index = index;
     }
 
     /**
      * Deletes a task from the TaskList.
      * @param tasks TaskList which stores the list of tasks.
      * @param storage Storage which saves the task into the text file.
+     * @param printer Printer which generates a response after this command executes.
      * @throws DukeException DukeException that may arise from invalid inputs.
      */
-    public String execute(TaskList tasks, Storage storage) throws DukeException {
+    public void execute(TaskList tasks, Storage storage, Printer printer) throws DukeException {
         if (tasks.getSize() == 0) {
-            throw new DukeException("You have no tasks to delete.");
+            printer.generateEmptyTaskListResponse("delete");
         } else if (index < 0 || index >= tasks.getSize()) {
             throw new DukeInvalidTaskIndexException("delete", tasks.getSize());
         } else {
-            Task t = tasks.getTask(index);
+            Task task = tasks.getTask(index);
             tasks.deleteTask(index);
             storage.save(tasks);
-            return ("Noted. I've removed this task:\n" + t + "\n"
-                    + "Now you have " + tasks.getSize() + " task"
-                    + ((tasks.getSize() - 1) == 1 ? " " : "s ") + "in the list.");
+            printer.generateDeleteResponse(tasks, task);
         }
     }
 

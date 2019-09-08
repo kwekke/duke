@@ -1,5 +1,6 @@
 package command;
 
+import duke.Printer;
 import duke.Storage;
 import duke.TaskList;
 import exception.DukeException;
@@ -24,14 +25,14 @@ public class ToDoCommand extends Command {
      * Adds a ToDoTask to the TaskList.
      * @param tasks TaskList which stores the list of tasks.
      * @param storage Storage which saves the task into the text file.
+     * @param printer Printer which generates a response after this command executes.
      * @throws DukeException DukeException that may arise from invalid inputs.
      */
-    public String execute(TaskList tasks, Storage storage) throws DukeException {
+    public void execute(TaskList tasks, Storage storage, Printer printer) {
         Task task = new ToDoTask(description);
         tasks.addTask(task);
         storage.save(tasks);
-        return "Got it. I've added this task:\n " + task + "\n" + "Now you have " + tasks.getSize() + " task"
-                + (tasks.getSize() == 1 ? " " : "s ") + "in the list.";
+        printer.generateToDoResponse(tasks, task);
     }
 
     public boolean isExit() {

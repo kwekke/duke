@@ -2,8 +2,8 @@ package exception;
 
 public class DukeInvalidTaskIndexException extends DukeException {
 
-    public DukeInvalidTaskIndexException(String msg, int n) {
-        super("Invalid numbered task to " + msg + ". Insert a number from 1 to " + n + ".");
+    public DukeInvalidTaskIndexException(String commandWord, int maxSize) {
+        super("Invalid numbered task to " + commandWord + ". Insert a number from 1 to " + maxSize + ".");
     }
 
 }
