@@ -21,6 +21,7 @@ public class EventTask extends Task {
      */
     public EventTask(String description, String time) throws DukeException {
         super(description);
+        assert !time.equals("");
         try {
             this.time = format.parse(time);
         } catch (ParseException e) {

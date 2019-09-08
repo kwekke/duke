@@ -22,6 +22,7 @@ public class Storage {
      * @param filePath a string storing the location of the text file which stores the tasks' data.
      */
     public Storage(String filePath) {
+        assert !filePath.equals("");
         this.filePath = filePath;
         File file = new File(filePath);
         try {
