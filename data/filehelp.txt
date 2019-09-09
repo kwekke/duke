@@ -1,0 +1,6 @@
+T||0||File Commands
+T||0||<file checkout filename> specifies which file to use as data source. if it doesn't exist, create a new file with given name
+T||0||<file copy filename> creates a copy of a file with a new file name called filename-copy. it has all the tasks copied as well.
+T||0||<file delete filename> deletes a file with given filename.
+T||0||<file list> displays all the files in the ./data/ folder.
+T||0||<file rename oldfilename /to newfilename> rename file. remember to use /to.

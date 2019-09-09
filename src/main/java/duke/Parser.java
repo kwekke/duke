@@ -1,5 +1,6 @@
 package duke;
 
+
 import command.Command;
 import command.DeadlineCommand;
 import command.DeleteCommand;
@@ -7,6 +8,11 @@ import command.DoneCommand;
 import command.EventCommand;
 import command.ExitCommand;
 import command.FindCommand;
+import command.FileCheckOutCommand;
+import command.FileCopyCommand;
+import command.FileDeleteCommand;
+import command.FileListCommand;
+import command.FileRenameCommand;
 import command.ListCommand;
 import command.ToDoCommand;
 import exception.DukeException;
@@ -24,9 +30,11 @@ class Parser {
      */
     static Command parse(String input) throws DukeException {
         String[] inputSplitBySpace = input.split(" ");
-        switch (inputSplitBySpace[0]) {
+        switch (inputSplitBySpace[0].toLowerCase()) {
+        case "b":
+        case "bb":
         case "bye":
-            return parseExit(input);
+            return parseBye(input);
         case "deadline":
             return parseDeadline(input);
         case "delete" :
@@ -35,6 +43,8 @@ class Parser {
             return parseDone(input);
         case "event":
             return parseEvent(input);
+        case "file":
+            return parseFile(input);
         case "find":
             return parseFind(input);
         case "list":
@@ -44,6 +54,11 @@ class Parser {
         default:
             throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
         }
+    }
+
+    private static Command parseBye(String input) {
+        assert input.equals("b") || input.equals("bb") || input.equals("bye");
+        return new ExitCommand();
     }
 
     private static Command parseDeadline(String input) throws DukeException {
@@ -94,9 +109,63 @@ class Parser {
         return new EventCommand(taskDesc, inputSplitBySpace[1].trim());
     }
 
-    private static Command parseExit(String input) {
-        assert input.equals("bye");
-        return new ExitCommand();
+    private static Command parseFile(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        switch (inputSplitBySpace[1].toLowerCase()) {
+        case "checkout":
+            return parseFileCheckOut(input);
+        case "copy":
+            return parseFileCopy(input);
+        case "delete":
+            return parseFileDelete(input);
+        case "list":
+            return parseFileList();
+        case "rename":
+            return parseFileRename(input);
+        default:
+            throw new DukeException("Invalid file command.");
+        }
+    }
+
+    private static Command parseFileCheckOut(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 2) {
+            throw new DukeException("Give a file name to check out.");
+        }
+        return new FileCheckOutCommand(input.substring(14).trim());
+    }
+
+    private static Command parseFileCopy(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 2) {
+            throw new DukeException("Give a file name to copy.");
+        }
+        return new FileCopyCommand(input.substring(10).trim());
+    }
+
+    private static Command parseFileDelete(String input) throws DukeException {
+        String[] inputSplitBySpace = input.split(" ");
+        if (inputSplitBySpace.length <= 2) {
+            throw new DukeException("Give me a file name to delete.");
+        }
+        return new FileDeleteCommand(input.substring(12).trim());
+    }
+
+    private static Command parseFileList() {
+        return new FileListCommand();
+    }
+
+    private static Command parseFileRename(String input) throws DukeException {
+        String[] inputSplitByCommandKeyword = input.split("/to");
+        String oldFileName = inputSplitByCommandKeyword[0].substring(12).trim();
+        if (oldFileName.equals("")) {
+            throw new DukeException("Give me a file to rename.");
+        }
+        if (inputSplitByCommandKeyword.length < 2) {
+            throw new DukeException("Did you remember to use \"/to\"?");
+        }
+        String newFileName = inputSplitByCommandKeyword[1].trim();
+        return new FileRenameCommand(oldFileName, newFileName);
     }
 
     private static Command parseFind(String input) throws DukeException {
@@ -117,6 +186,6 @@ class Parser {
         if (inputSplitBySpace.length <= 1) {
             throw new DukeInvalidTaskDescriptionException("ToDo");
         }
-        return new ToDoCommand(inputSplitBySpace[1]);
+        return new ToDoCommand(input.substring(5).trim());
     }
 }

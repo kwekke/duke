@@ -1,6 +1,7 @@
 package duke;
 
 import command.Command;
+import command.FileCheckOutCommand;
 import exception.DukeException;
 
 import static javafx.application.Platform.exit;
@@ -11,16 +12,12 @@ public class Duke {
     private Printer printer;
 
     public Duke() {
-        this("./data/duke.txt");
+        initialize();
     }
 
-    /**
-     * Creates an instance of Duke, a task manager.
-     * @param filePath a string storing the location of the text file which stores the tasks' data.
-     */
-    private Duke(String filePath) {
+    private void initialize() {
         try {
-            this.storage = new Storage(filePath);
+            this.storage = new Storage();
             this.printer = new Printer();
             this.tasks = new TaskList(storage.load());
         } catch (DukeException e) {
@@ -40,6 +37,7 @@ public class Duke {
             if (c.isExit()) {
                 exit();
             }
+            tasks = new TaskList(storage.load());
             return printer.generateResponse();
         } catch (DukeException e) {
             return printer.generateExceptionMessage(e.getMessage());
