@@ -9,28 +9,26 @@ import task.ToDoTask;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
-    private String filePath;
+    private String filePath = "./data/duke.txt";
     private Scanner sc;
 
     /**
      * Initialises a storage object which handles with loading tasks from the file
      * and saving tasks in the file.
-     * @param filePath a string storing the location of the text file which stores the tasks' data.
      */
     public Storage(String filePath) {
-        assert !filePath.equals("");
         this.filePath = filePath;
-        File file = new File(filePath);
-        try {
-            file.createNewFile();
-            sc = new Scanner(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    }
+
+    public Storage() {
+
     }
 
     /**
@@ -38,7 +36,14 @@ public class Storage {
      * @return an ArrayList of tasks.
      * @throws DukeException DukeException that may arise from invalid inputs.
      */
-    ArrayList<Task> load() throws DukeException {
+    public ArrayList<Task> load() throws DukeException {
+        File file = new File(filePath);
+        try {
+            file.createNewFile();
+            sc = new Scanner(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ArrayList<Task> tasks = new ArrayList<>();
         while (sc.hasNext()) {
             String tokenString = sc.nextLine();
@@ -65,6 +70,7 @@ public class Storage {
                 task.markAsDone();
             }
         }
+        sc.close();
         return tasks;
     }
 
@@ -74,15 +80,51 @@ public class Storage {
      */
     public void save(TaskList tasks) {
         try {
-            FileWriter fw1 = new FileWriter(filePath);
-            fw1.write("");
-            fw1.close();
-            FileWriter fw2 = new FileWriter(filePath);
+            FileWriter fileWriter = new FileWriter(filePath);
             for (Task task : tasks.getList()) {
                 String s = task.toFileString() + "\n";
-                fw2.write(s);
+                fileWriter.write(s);
             }
-            fw2.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String fileNameToFilePath(String fileName) {
+        return String.format("./data/%s.txt", fileName);
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void updateFileName(String fileName) {
+        this.filePath = fileNameToFilePath(fileName);
+    }
+
+    /**
+     * Returns a list of file names.
+     * @return a list of file names.
+     */
+    public ArrayList<String> getFileNames() {
+        ArrayList<String> listOfFileNames = new ArrayList<>();
+        File fileDirectory = (new File(filePath)).getParentFile();
+        for (File file : fileDirectory.listFiles()) {
+            listOfFileNames.add(file.getName());
+        }
+        return listOfFileNames;
+    }
+
+    /**
+     * Deletes a file in the current directory with the given file name.
+     * @param deleteFileName the name of the file to be deleted.
+     */
+    public void deleteFile(String deleteFileName) {
+        assert !filePath.equals(fileNameToFilePath(deleteFileName));
+        Path deleteFilePath = Paths.get(fileNameToFilePath(deleteFileName));
+        try {
+            Files.deleteIfExists(deleteFilePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
