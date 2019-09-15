@@ -27,7 +27,7 @@ public class Main extends Application {
             stage.show();
             stage.setTitle("Duke");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 }

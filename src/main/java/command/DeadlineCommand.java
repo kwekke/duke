@@ -17,7 +17,6 @@ import java.util.Date;
  */
 public class DeadlineCommand extends Command {
     private String description;
-    private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
     private Date time;
 
     /**
@@ -27,6 +26,7 @@ public class DeadlineCommand extends Command {
      */
     public DeadlineCommand(String description, String time) throws DukeException {
         this.description = description;
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HHmm");
         try {
             this.time = format.parse(time);
         } catch (ParseException e) {

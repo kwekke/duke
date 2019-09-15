@@ -34,7 +34,7 @@ public class FileRenameCommand extends Command {
             storage.updateFileName(newFileName);
             printer.generateFileRenameMessage(oldFileName, newFileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DukeException("Cannot rename file.");
         }
     }
 

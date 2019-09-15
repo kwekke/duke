@@ -25,7 +25,6 @@ public class FileDeleteCommand extends Command {
         if (currentFilePath.equals(String.format("./data/%s.txt", fileName))) {
             throw new DukeException("You can't delete the file you are on.");
         }
-
         storage.deleteFile(fileName);
         printer.generateFileDeleteMessage(fileName);
     }

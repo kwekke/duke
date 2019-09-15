@@ -3,7 +3,6 @@ package command;
 import duke.Printer;
 import duke.Storage;
 import duke.TaskList;
-import exception.DukeException;
 
 import java.util.ArrayList;
 

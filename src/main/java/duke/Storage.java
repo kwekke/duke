@@ -20,15 +20,26 @@ public class Storage {
     private Scanner sc;
 
     /**
-     * Initialises a storage object which handles with loading tasks from the file
-     * and saving tasks in the file.
+     * Initializes Storage and ensures that a default .txt file exists.
      */
-    public Storage(String filePath) {
-        this.filePath = filePath;
+    public Storage() {
+        if (!doesFileExist()) {
+            createFile();
+        }
     }
 
-    public Storage() {
+    private boolean doesFileExist() {
+        return Paths.get(filePath).toFile().exists();
+    }
 
+    private void createFile() {
+        try {
+            Path parentDirectory = Paths.get(filePath).getParent();
+            Files.createDirectories(parentDirectory);
+            Files.createFile(Paths.get(filePath));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -42,36 +53,45 @@ public class Storage {
             file.createNewFile();
             sc = new Scanner(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+        return readTasksFromFile();
+    }
+
+    private ArrayList<Task> readTasksFromFile() throws DukeException {
         ArrayList<Task> tasks = new ArrayList<>();
         while (sc.hasNext()) {
-            String tokenString = sc.nextLine();
-            String[] token = tokenString.split("\\|\\|");
-            String time;
-            Task task;
-            switch (token[0].trim()) {
-            case "T":
-                task = new ToDoTask(token[2].trim());
-                break;
-            case "D":
-                time = token[3];
-                task = new DeadlineTask(token[2].trim(), time);
-                break;
-            case "E":
-                time = token[3];
-                task = new EventTask(token[2].trim(), time);
-                break;
-            default:
-                throw new DukeException("Corrupted file. Bad line is " + tokenString);
-            }
-            tasks.add(task);
-            if (token[1].trim().equals("1")) {
-                task.markAsDone();
+            String token = sc.nextLine();
+            String[] tokenSplit = token.split("\\|\\|");
+            try {
+                Task task = readLine(token, tokenSplit);
+                if (tokenSplit[1].trim().equals("1")) {
+                    task.markAsDone();
+                }
+                tasks.add(task);
+            } catch (DukeException e) {
+                throw new DukeException(e.getMessage());
             }
         }
         sc.close();
         return tasks;
+    }
+
+    private Task readLine(String tokenString, String[] token) throws DukeException {
+        String time;
+        switch (token[0].trim()) {
+        case "T":
+            return new ToDoTask(token[2].trim());
+        case "D":
+            time = token[3];
+            return new DeadlineTask(token[2].trim(), time);
+        case "E":
+            time = token[3];
+            return new EventTask(token[2].trim(), time);
+        default:
+            throw new DukeException("Corrupted file. Bad line is " + tokenString);
+        }
+
     }
 
     /**
@@ -87,7 +107,7 @@ public class Storage {
             }
             fileWriter.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -110,7 +130,9 @@ public class Storage {
     public ArrayList<String> getFileNames() {
         ArrayList<String> listOfFileNames = new ArrayList<>();
         File fileDirectory = (new File(filePath)).getParentFile();
-        for (File file : fileDirectory.listFiles()) {
+        File[] listOfFiles = fileDirectory.listFiles();
+        assert listOfFiles != null;
+        for (File file : listOfFiles) {
             listOfFileNames.add(file.getName());
         }
         return listOfFileNames;
@@ -120,13 +142,13 @@ public class Storage {
      * Deletes a file in the current directory with the given file name.
      * @param deleteFileName the name of the file to be deleted.
      */
-    public void deleteFile(String deleteFileName) {
+    public void deleteFile(String deleteFileName) throws DukeException {
         assert !filePath.equals(fileNameToFilePath(deleteFileName));
         Path deleteFilePath = Paths.get(fileNameToFilePath(deleteFileName));
         try {
             Files.deleteIfExists(deleteFilePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DukeException("File does not exist.");
         }
     }
 }

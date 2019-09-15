@@ -1,4 +1,4 @@
-T||1||todo1
-D||0||deadline1||01/01/1990 2359
-E||0||event1||02/02/2020 1800
-T||0||averyveryveryveryveryveryveryveryveryveryveryverylongtodo
+T||0||Watch webcasts
+D||1||CS2103T iP||19/09/2019 2359
+E||0||Group meeting||17/09/2019 1000
+D||0||homework||16/09/2019 2359

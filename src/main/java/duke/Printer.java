@@ -49,7 +49,7 @@ public class Printer {
      */
     public void generateDeadlineResponse(TaskList tasks, Task newDeadlineTask) {
         response = ADDED_MSG
-                + newDeadlineTask + "\n"
+                + "    " + newDeadlineTask + "\n"
                 + printTaskListSize(tasks);
     }
 
@@ -64,13 +64,13 @@ public class Printer {
      */
     public void generateDeleteResponse(TaskList tasks, Task deletedTask) {
         response = DELETE_MSG
-                + deletedTask + "\n"
+                + "    " + deletedTask + "\n"
                 + printTaskListSize(tasks);
     }
 
     public void generateDoneResponse(Task doneTask) {
         response = DONE_MSG
-                + doneTask;
+                + "    " + doneTask;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Printer {
      */
     public void generateEventResponse(TaskList tasks, Task newEventTask) {
         response = ADDED_MSG
-                + newEventTask + "\n"
+                + "    " + newEventTask + "\n"
                 + printTaskListSize(tasks);
     }
 
@@ -115,7 +115,7 @@ public class Printer {
      */
     public void generateToDoResponse(TaskList tasks, Task newToDoTask) {
         response = ADDED_MSG
-                + newToDoTask + "\n"
+                + "    " + newToDoTask + "\n"
                 + printTaskListSize(tasks);
     }
 

@@ -5,7 +5,6 @@ import duke.Storage;
 import duke.TaskList;
 import exception.DukeException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +34,7 @@ public class FileCopyCommand extends Command {
             TaskList newTaskList = new TaskList(storage.load());
             printer.generateFileCopyMessage(newTaskList, fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DukeException("Close your other duke programs.");
         }
     }
 

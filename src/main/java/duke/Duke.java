@@ -1,7 +1,6 @@
 package duke;
 
 import command.Command;
-import command.FileCheckOutCommand;
 import exception.DukeException;
 
 import static javafx.application.Platform.exit;
