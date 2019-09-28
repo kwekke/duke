@@ -25,6 +25,10 @@ public class FileCopyCommand extends Command {
         if (!(fileNames.contains(String.format("%s.txt", fileName)))) {
             throw new DukeException(String.format("No file named %s to copy.", fileName));
         }
+        if (fileNames.contains(String.format("%s-copy.txt", fileName))) {
+            throw new DukeException(
+                    String.format("There is already a file named %s-copy.txt. Rename it first.", fileName));
+        }
         String newFileName = String.format("%s-copy", fileName);
         Path sourceFile = Paths.get(String.format("./data/%s.txt", fileName));
         Path targetFile = Paths.get(String.format("./data/%s.txt", newFileName));
@@ -34,7 +38,7 @@ public class FileCopyCommand extends Command {
             TaskList newTaskList = new TaskList(storage.load());
             printer.generateFileCopyMessage(newTaskList, fileName);
         } catch (IOException e) {
-            throw new DukeException("Close your other duke programs.");
+            throw new DukeException("Cannot copy file.");
         }
     }
 

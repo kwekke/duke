@@ -119,6 +119,16 @@ public class Storage {
         return filePath;
     }
 
+    /**
+     * Returns the name of the file being read.
+     * @return the name of the file being read.
+     */
+    public String getFileName() {
+        File file = new File(filePath);
+        String fileNameWithTxtExtension = file.getName();
+        return fileNameWithTxtExtension.substring(0, fileNameWithTxtExtension.length() - 4);
+    }
+
     public void updateFileName(String fileName) {
         this.filePath = fileNameToFilePath(fileName);
     }

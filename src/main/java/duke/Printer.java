@@ -15,10 +15,10 @@ public class Printer {
     private static final String DUKE_TAUNT = "are you even trying? lul\n";
     private static final String FILE_CHECKOUT_MESSAGE = "Checking out %s.txt!\n";
     private static final String FILE_COPY_MESSAGE = "You have copied %s.txt.\nCurrently checking out its copy. \n";
-    private static final String FILE_CURRENT_MESSAGE = "You are currently on %s.\n";
+    private static final String FILE_CURRENT_MESSAGE = "You are currently on %s.txt.\n";
     private static final String FILE_LIST_MESSAGE = "You have the following files in this folder.\n";
     private static final String FILE_LIST_REMINDER_MESSAGE = "Use file names only (exclude .txt in commands).\n";
-    private static final String FILE_RENAME_MESSAGE = "You have renamed %s to %s.\n";
+    private static final String FILE_RENAME_MESSAGE = "You have renamed %s.txt to %s.txt.\n";
     private static final String FIND_MESSAGE = "%s task%s found with the \"%s\" keyword.\n";
 
 
@@ -144,21 +144,20 @@ public class Printer {
     /**
      * Generates a response from FileListCommand.
      * @param listOfFileNames the list of file names in the current directory
-     * @param currentFilePath the name of the current file path Storage is using
+     * @param currentFileName the name of the current file path Storage is using
      */
-    public void generateFileListMessage(ArrayList<String> listOfFileNames, String currentFilePath) {
+    public void generateFileListMessage(ArrayList<String> listOfFileNames, String currentFileName) {
         Collections.sort(listOfFileNames);
         response = FILE_LIST_MESSAGE;
         for (int i = 0; i < listOfFileNames.size(); i++) {
             response += (i + 1) + ". " + listOfFileNames.get(i) + "\n";
         }
-        String currentFileName = currentFilePath.substring(7);
         response += String.format(FILE_CURRENT_MESSAGE, currentFileName)
                 + FILE_LIST_REMINDER_MESSAGE;
     }
 
     public void generateFileDeleteMessage(String fileName) {
-        response = fileName + " deleted.";
+        response = fileName + ".txt deleted.";
     }
 
     /**

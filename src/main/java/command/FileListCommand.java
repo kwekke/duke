@@ -11,7 +11,7 @@ public class FileListCommand extends Command {
     @Override
     public void execute(TaskList tasks, Storage storage, Printer printer) {
         ArrayList<String> listOfFileNames = storage.getFileNames();
-        printer.generateFileListMessage(listOfFileNames, storage.getFilePath());
+        printer.generateFileListMessage(listOfFileNames, storage.getFileName());
     }
 
     @Override

@@ -27,6 +27,9 @@ public class FileRenameCommand extends Command {
         if (!(fileNames.contains(String.format("%s.txt", oldFileName)))) {
             throw new DukeException(String.format("No file named %s to rename.", oldFileName));
         }
+        if (fileNames.contains(String.format("%s.txt", newFileName))) {
+            throw new DukeException(String.format("A file name of %s already exists.", newFileName));
+        }
         Path sourceFile = Paths.get(String.format("./data/%s.txt", oldFileName));
         Path targetFile = Paths.get(String.format("./data/%s.txt", newFileName));
         try {
